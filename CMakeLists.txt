@@ -666,7 +666,7 @@ else() # ! MSVC
 		-Wno-error=deprecated-declarations
 	)
 
-	if((NOT ENABLE_ASAN) AND (NOT ENABLE_TSAN) AND (NOT ENABLE_UBSAN) AND (NOT DISABLE_FRAME_LARGER_THAN_WARNING))
+	if((NOT ENABLE_ASAN) AND (NOT ENABLE_MSAN) AND (NOT ENABLE_TSAN) AND (NOT ENABLE_UBSAN) AND (NOT DISABLE_FRAME_LARGER_THAN_WARNING))
 		#
 		# Only do this if none of ASan, TSan, and UBSan are
 		# enabled; the instrumentation they add increases
@@ -899,6 +899,10 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 endif()
 
 include(CMakePushCheckState)
+if (ENABLE_MSAN)
+	add_compile_options("-fsanitize=memory")
+	add_compile_options("-fno-omit-frame-pointer")
+endif()
 
 if(ENABLE_ASAN)
 	# Available since MSVC 2019 version 16.9
